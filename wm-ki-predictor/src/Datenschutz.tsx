@@ -1,6 +1,15 @@
 export default function Datenschutz() {
   return (
     <div style={{ padding: 20 }}>
+      <button
+        onClick={() => {
+          window.history.pushState({}, '', '/');
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }}
+      >
+        ← Zurück
+      </button>
+
       <h1>Datenschutzerklärung</h1>
 
       <p>
