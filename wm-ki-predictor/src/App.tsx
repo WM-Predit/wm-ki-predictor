@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import Impressum from './Impressum';
+import Datenschutz from './Datenschutz';
 
 type MatchPrediction = {
   match: string;
