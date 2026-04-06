@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Impressum from './Impressum';
 import Datenschutz from './Datenschutz';
 
@@ -195,8 +195,12 @@ function MatchCard({
 }
 
 export default function App() {
-  const path = window.location.pathname;
-
+const [path, setPath] = useState(window.location.pathname);
+  useEffect(() => {
+  const handleRouteChange = () => setPath(window.location.pathname);
+  window.addEventListener('popstate', handleRouteChange);
+  return () => window.removeEventListener('popstate', handleRouteChange);
+}, []);
   if (path === '/impressum') {
     return <Impressum />;
   }
@@ -350,8 +354,25 @@ export default function App() {
         </div>
 
         <div className="footer-links">
-          <a href="/impressum">Impressum</a>
-          <a href="/datenschutz">Datenschutz</a>
+          <button
+  type="button"
+  onClick={() => {
+    window.history.pushState({}, '', '/impressum');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }}
+>
+  Impressum
+</button>
+
+<button
+  type="button"
+  onClick={() => {
+    window.history.pushState({}, '', '/datenschutz');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }}
+>
+  Datenschutz
+</button>
         </div>
       </footer>
     </div>
