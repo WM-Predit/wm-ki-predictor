@@ -206,14 +206,6 @@ export default function App() {
 
   if (path === '/datenschutz') {
     return <Datenschutz />;
-  }  const path = window.location.pathname;
-
-  if (path === '/impressum') {
-    return <Impressum />;
-  }
-
-  if (path === '/datenschutz') {
-    return <Datenschutz />;
   }
   const [team, setTeam] = useState('Deutschland');
   const [openMatch, setOpenMatch] = useState<string | null>(null);
