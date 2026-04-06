@@ -120,10 +120,7 @@ const featuredTeams = ['Deutschland', 'Brasilien', 'Frankreich', 'England', 'Arg
 const allTeams = Object.keys(data).sort((a, b) => a.localeCompare(b, 'de'));
 
 function normalize(value: string) {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 function splitMatch(match: string) {
