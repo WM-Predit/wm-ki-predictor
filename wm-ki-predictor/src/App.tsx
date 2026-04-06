@@ -339,12 +339,13 @@ export default function App() {
           <strong>WM KI Predictor 2026</strong>
           <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
         </div>
-        <div className="footer-links">
-          <a href="#">Impressum</a>
-          <a href="#">Datenschutz</a>
-          <a href="#">Kontakt</a>
+<div className="footer-links">
+  <a href="/impressum">Impressum</a>
+  <a href="/datenschutz">Datenschutz</a>
+</div>
         </div>
       </footer>
     </div>
   );
 }
+Links gefixt
