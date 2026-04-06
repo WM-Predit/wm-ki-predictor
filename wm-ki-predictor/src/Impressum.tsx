@@ -1,6 +1,15 @@
 export default function Impressum() {
   return (
     <div style={{ padding: 20 }}>
+      <button
+        onClick={() => {
+          window.history.pushState({}, '', '/');
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }}
+      >
+        ← Zurück
+      </button>
+
       <h1>Impressum</h1>
 
       <p>Angaben gemäß § 5 DDG</p>
