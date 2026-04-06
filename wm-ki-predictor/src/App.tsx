@@ -343,18 +343,18 @@ export default function App() {
           </div>
         </section>
       </main>
+<footer className="footer container">
+  <div>
+    <strong>WM KI Predictor 2026</strong>
+    <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
+  </div>
 
-      <footer className="footer container">
-        <div>
-          <strong>WM KI Predictor 2026</strong>
-          <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
-        </div>
-<div className="footer-links">
-  <a href="/impressum">Impressum</a>
-  <a href="/datenschutz">Datenschutz</a>
+  <div className="footer-links">
+    <a href="/impressum">Impressum</a>
+    <a href="/datenschutz">Datenschutz</a>
+  </div>
+</footer>
 </div>
-        </div>
-      </fix footer>
-    </div>
-  );
+);
 }
+     
