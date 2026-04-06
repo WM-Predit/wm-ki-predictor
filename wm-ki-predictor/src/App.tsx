@@ -354,7 +354,7 @@ export default function App() {
   <a href="/datenschutz">Datenschutz</a>
 </div>
         </div>
-      </footer>
+      </fix footer>
     </div>
   );
 }
