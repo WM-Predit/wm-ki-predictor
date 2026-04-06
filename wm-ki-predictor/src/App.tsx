@@ -78,7 +78,7 @@ const flags: Record<string, string> = {
   Deutschland: '🇩🇪',
   Brasilien: '🇧🇷',
   Frankreich: '🇫🇷',
-  England: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  England: '🏴',
   Argentinien: '🇦🇷',
   Spanien: '🇪🇸',
   Portugal: '🇵🇹',
@@ -91,7 +91,7 @@ const flags: Record<string, string> = {
   Elfenbeinküste: '🇨🇮',
   Ecuador: '🇪🇨',
   Haiti: '🇭🇹',
-  Schottland: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  Schottland: '🏴',
   Marokko: '🇲🇦',
   Senegal: '🇸🇳',
   Norwegen: '🇳🇴',
@@ -198,7 +198,7 @@ function MatchCard({
 }
 
 export default function App() {
-  const [query, setQuery] = useState('');  const path = window.location.pathname;
+  const path = window.location.pathname;
 
   if (path === '/impressum') {
     return <Impressum />;
@@ -207,6 +207,8 @@ export default function App() {
   if (path === '/datenschutz') {
     return <Datenschutz />;
   }
+
+  const [query, setQuery] = useState('');
   const [team, setTeam] = useState('Deutschland');
   const [openMatch, setOpenMatch] = useState<string | null>(null);
 
@@ -343,18 +345,18 @@ export default function App() {
           </div>
         </section>
       </main>
-<footer className="footer container">
-  <div>
-    <strong>WM KI Predictor 2026</strong>
-    <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
-  </div>
 
-  <div className="footer-links">
-    <a href="/impressum">Impressum</a>
-    <a href="/datenschutz">Datenschutz</a>
-  </div>
-</footer>
-</div>
-);
+      <footer className="footer container">
+        <div>
+          <strong>WM KI Predictor 2026</strong>
+          <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
+        </div>
+
+        <div className="footer-links">
+          <a href="/impressum">Impressum</a>
+          <a href="/datenschutz">Datenschutz</a>
+        </div>
+      </footer>
+    </div>
+  );
 }
-     
