@@ -348,3 +348,7 @@ export default function App() {
     </div>
   );
 }
+<footer style={{ marginTop: 40, textAlign: "center" }}>
+  <a href="/impressum">Impressum</a> |{" "}
+  <a href="/datenschutz">Datenschutz</a>
+</footer>
