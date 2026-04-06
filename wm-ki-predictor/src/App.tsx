@@ -197,6 +197,14 @@ function MatchCard({
 export default function App() {
   const path = window.location.pathname;
 
+  if (path === '/impressum') {
+    return <Impressum />;
+  }
+
+  if (path === '/datenschutz') {
+    return <Datenschutz />;
+  }
+
   const [query, setQuery] = useState('');
   const [team, setTeam] = useState('Deutschland');
   const [openMatch, setOpenMatch] = useState<string | null>(null);
@@ -206,14 +214,6 @@ export default function App() {
     const normalizedQuery = normalize(query);
     return allTeams.filter((entry) => normalize(entry).includes(normalizedQuery));
   }, [query]);
-
-  if (path === '/impressum') {
-    return <Impressum />;
-  }
-
-  if (path === '/datenschutz') {
-    return <Datenschutz />;
-  }
 
   const currentMatches = data[team] ?? [];
   const favorite = 'Brasilien';
@@ -336,11 +336,7 @@ export default function App() {
                 key={prediction.match}
                 prediction={prediction}
                 isOpen={openMatch === prediction.match}
-                onToggle={() =>
-                  setOpenMatch((current) =>
-                    current === prediction.match ? null : prediction.match
-                  )
-                }
+                onToggle={() => setOpenMatch((current) => (current === prediction.match ? null : prediction.match))}
               />
             ))}
           </div>
