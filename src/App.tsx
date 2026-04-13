@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Impressum from './Impressum';
+import Datenschutz from './Datenschutz';
 
 type MatchPrediction = {
   match: string;
@@ -76,7 +78,7 @@ const flags: Record<string, string> = {
   Deutschland: '🇩🇪',
   Brasilien: '🇧🇷',
   Frankreich: '🇫🇷',
-  England: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  England: '🏴',
   Argentinien: '🇦🇷',
   Spanien: '🇪🇸',
   Portugal: '🇵🇹',
@@ -89,7 +91,7 @@ const flags: Record<string, string> = {
   Elfenbeinküste: '🇨🇮',
   Ecuador: '🇪🇨',
   Haiti: '🇭🇹',
-  Schottland: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  Schottland: '🏴',
   Marokko: '🇲🇦',
   Senegal: '🇸🇳',
   Norwegen: '🇳🇴',
@@ -118,10 +120,7 @@ const featuredTeams = ['Deutschland', 'Brasilien', 'Frankreich', 'England', 'Arg
 const allTeams = Object.keys(data).sort((a, b) => a.localeCompare(b, 'de'));
 
 function normalize(value: string) {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 function splitMatch(match: string) {
@@ -196,9 +195,16 @@ function MatchCard({
 }
 
 export default function App() {
-  const [query, setQuery] = useState('');
+const [path, setPath] = useState(window.location.hash || '#/');
+const [query, setQuery] = useState('');
   const [team, setTeam] = useState('Deutschland');
   const [openMatch, setOpenMatch] = useState<string | null>(null);
+
+useEffect(() => {
+  const handleRouteChange = () => setPath(window.location.hash || '#/');
+  window.addEventListener('hashchange', handleRouteChange);
+  return () => window.removeEventListener('hashchange', handleRouteChange);
+}, []);
 
   const filteredTeams = useMemo(() => {
     if (!query.trim()) return featuredTeams;
@@ -208,6 +214,14 @@ export default function App() {
 
   const currentMatches = data[team] ?? [];
   const favorite = 'Brasilien';
+
+  if (path === '#/impressum') {
+  return <Impressum />;
+}
+
+if (path === '#/datenschutz') {
+  return <Datenschutz />;
+}
 
   return (
     <div className="app-shell">
@@ -339,16 +353,27 @@ export default function App() {
           <strong>WM KI Predictor 2026</strong>
           <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
         </div>
+
         <div className="footer-links">
-          <a href="#">Impressum</a>
-          <a href="#">Datenschutz</a>
-          <a href="#">Kontakt</a>
+  <button
+  type="button"
+  onClick={() => {
+    window.location.hash = '/impressum';
+  }}
+>
+  Impressum
+</button>
+
+<button
+  type="button"
+  onClick={() => {
+    window.location.hash = '/datenschutz';
+  }}
+>
+  Datenschutz
+</button>
         </div>
       </footer>
     </div>
   );
 }
-<footer style={{ marginTop: 40, textAlign: "center" }}>
-  <a href="/impressum">Impressum</a> |{" "}
-  <a href="/datenschutz">Datenschutz</a>
-</footer>
