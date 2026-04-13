@@ -119,6 +119,13 @@ const flags: Record<string, string> = {
 const featuredTeams = ['Deutschland', 'Brasilien', 'Frankreich', 'England', 'Argentinien', 'Spanien'];
 const allTeams = Object.keys(data).sort((a, b) => a.localeCompare(b, 'de'));
 
+const ranking = [
+  { team: 'Brasilien', chance: 24, summary: 'Breiter Kader, Tempo und hohe individuelle Qualität.' },
+  { team: 'Frankreich', chance: 19, summary: 'Tiefe im Kader und starke Besetzung auf Schlüsselpositionen.' },
+  { team: 'Deutschland', chance: 16, summary: 'Struktur, Kontrolle und gute Voraussetzungen in der Gruppe.' },
+  { team: 'Argentinien', chance: 14, summary: 'Erfahrung, Effizienz und starke Turniermentalität.' }
+];
+
 function normalize(value: string) {
   return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -130,13 +137,13 @@ function splitMatch(match: string) {
 
 function StatBar({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bar-wrap">
-      <div className="bar-header">
+    <div className="stat-bar">
+      <div className="stat-bar-head">
         <span>{label}</span>
         <strong>{value}%</strong>
       </div>
-      <div className="bar-track" aria-hidden="true">
-        <div className="bar-fill" style={{ width: `${value}%` }} />
+      <div className="stat-bar-track" aria-hidden="true">
+        <div className="stat-bar-fill" style={{ width: `${value}%` }} />
       </div>
     </div>
   );
@@ -152,40 +159,50 @@ function MatchCard({
   onToggle: () => void;
 }) {
   const parts = splitMatch(prediction.match);
+  const maxValue = Math.max(prediction.home, prediction.draw, prediction.away);
+
+  let badge = 'Ausgeglichen';
+  if (prediction.home === maxValue && prediction.home >= 75) badge = 'Klarer Favorit';
+  if (prediction.draw === maxValue) badge = 'Enges Spiel';
+  if (prediction.away === maxValue && prediction.away >= 50) badge = 'Überraschungspotenzial';
 
   return (
-    <article className="card match-card">
-      <div className="match-top">
+    <article className="match-card-v2">
+      <div className="match-card-top">
         <div>
-          <p className="eyebrow">Gruppenspiel</p>
-          <h3 className="match-title">
+          <p className="section-label">Gruppenspiel</p>
+          <h3 className="match-card-title">
             <span>{flags[parts.home] || '⚽'} {parts.home}</span>
-            <span className="versus">vs</span>
+            <span className="match-card-vs">vs</span>
             <span>{flags[parts.away] || '⚽'} {parts.away}</span>
           </h3>
         </div>
-        <div className="score-chip">{prediction.score}</div>
+
+        <div className="match-card-score">{prediction.score}</div>
       </div>
 
-      <div className="hint-box">KI-Hinweis: {prediction.reason}</div>
+      <div className="match-card-meta">
+        <span className="status-badge">{badge}</span>
+        <span className="analysis-tag">Analyse: {prediction.reason}</span>
+      </div>
 
-      <button className="primary-btn" onClick={onToggle}>
-        {isOpen ? 'Vorhersage schließen' : 'Vorhersage öffnen'}
+      <button className="cta-button secondary" onClick={onToggle}>
+        {isOpen ? 'Weniger anzeigen' : 'Analyse öffnen'}
       </button>
 
       {isOpen && (
-        <div className="prediction-panel">
-          <p className="eyebrow">Vorhergesagtes Ergebnis</p>
-          <p className="big-score">{prediction.score}</p>
+        <div className="match-card-panel">
+          <p className="section-label">Wahrscheinlichkeiten</p>
+          <p className="result-number">{prediction.score}</p>
 
-          <div className="bars">
+          <div className="stat-bars">
             <StatBar label={`${flags[parts.home] || '⚽'} ${parts.home}`} value={prediction.home} />
-            <StatBar label="🤝 Unentschieden" value={prediction.draw} />
+            <StatBar label="Unentschieden" value={prediction.draw} />
             <StatBar label={`${flags[parts.away] || '⚽'} ${parts.away}`} value={prediction.away} />
           </div>
 
-          <div className="reason-box">
-            <strong>Warum diese Prognose?</strong>
+          <div className="panel-note">
+            <strong>Begründung</strong>
             <p>Die aktuelle Einschätzung spricht für dieses Ergebnis wegen {prediction.reason}.</p>
           </div>
         </div>
@@ -195,79 +212,211 @@ function MatchCard({
 }
 
 export default function App() {
-const [path, setPath] = useState(window.location.hash || '#/');
-const [query, setQuery] = useState('');
+  const [path, setPath] = useState(window.location.hash || '#/');
+  const [query, setQuery] = useState('');
   const [team, setTeam] = useState('Deutschland');
   const [openMatch, setOpenMatch] = useState<string | null>(null);
 
-useEffect(() => {
-  const handleRouteChange = () => setPath(window.location.hash || '#/');
-  window.addEventListener('hashchange', handleRouteChange);
-  return () => window.removeEventListener('hashchange', handleRouteChange);
-}, []);
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.location.hash = '/';
+    }
+
+    const handleRouteChange = () => setPath(window.location.hash || '#/');
+    window.addEventListener('hashchange', handleRouteChange);
+    return () => window.removeEventListener('hashchange', handleRouteChange);
+  }, []);
 
   const filteredTeams = useMemo(() => {
-    if (!query.trim()) return featuredTeams;
+    if (!query.trim()) return allTeams;
     const normalizedQuery = normalize(query);
     return allTeams.filter((entry) => normalize(entry).includes(normalizedQuery));
   }, [query]);
 
   const currentMatches = data[team] ?? [];
-  const favorite = 'Brasilien';
+  const heroTopMatch = data['Brasilien'][0];
 
-  if (path === '#/impressum') {
-  return <Impressum />;
-}
-
-if (path === '#/datenschutz') {
-  return <Datenschutz />;
-}
+  if (path === '#/impressum') return <Impressum />;
+  if (path === '#/datenschutz') return <Datenschutz />;
 
   return (
-    <div className="app-shell">
-      <div className="background-overlay" />
+    <div className="site-shell">
+      <div className="site-glow site-glow-left" />
+      <div className="site-glow site-glow-right" />
 
-      <header className="hero section container">
-        <div className="hero-copy">
-          <div className="badge">🏆 WM KI Predictor 2026</div>
-          <h1>Wer gewinnt die WM 2026?</h1>
-          <p className="hero-text">
-            Interaktive KI-Vorhersagen für Gruppenspiele mit Ergebnistipps, Wahrscheinlichkeiten und kurzer Analyse.
-          </p>
-
-          <div className="stats-row">
-            <div className="mini-stat">🏟️ Moderne Web-Version</div>
-            <div className="mini-stat">📊 Team-Suche</div>
-            <div className="mini-stat">⚽ 3 Spiele pro Team</div>
-          </div>
-        </div>
-
-        <aside className="search-panel card">
-          <div className="panel-head">
+      <header className="topbar-wrap">
+        <div className="container topbar">
+          <div className="brand">
+            <div className="brand-mark">WM</div>
             <div>
-              <p className="eyebrow">Team auswählen</p>
-              <h2>Schnellstart</h2>
+              <strong>WM KI Predictor</strong>
+              <p>Professionelle Turnier-Prognosen</p>
             </div>
-            <span className="live-chip">Live Preview</span>
           </div>
 
-          <label className="search-box" htmlFor="team-search">
-            <span aria-hidden="true">🔎</span>
-            <input
-              id="team-search"
-              type="text"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="z. B. Frankreich oder Spanien"
-            />
-          </label>
+          <nav className="topnav">
+            <button onClick={() => document.getElementById('ranking')?.scrollIntoView({ behavior: 'smooth' })}>
+              Favoriten
+            </button>
+            <button onClick={() => document.getElementById('teams')?.scrollIntoView({ behavior: 'smooth' })}>
+              Teams
+            </button>
+            <button onClick={() => document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' })}>
+              Match Center
+            </button>
+          </nav>
+        </div>
+      </header>
 
-          <div className="team-grid">
-            {filteredTeams.length > 0 ? (
-              filteredTeams.map((entry) => (
+      <main className="container main-layout">
+        <section className="hero-v2">
+          <div className="hero-panel">
+            <div className="hero-kicker">WM 2026 Prognoseplattform</div>
+            <h1>Fußball-Prognosen, die wie ein echtes Produkt aussehen.</h1>
+            <p className="hero-description">
+              Moderne Vorschau auf Gruppenspiele, Wahrscheinlichkeiten, Favoriten und Match-Analysen
+              in einem klaren, hochwertigen Interface.
+            </p>
+
+            <div className="hero-actions">
+              <button
+                className="cta-button"
+                onClick={() => document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Zum Match Center
+              </button>
+
+              <button
+                className="ghost-button"
+                onClick={() => document.getElementById('ranking')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Favoriten ansehen
+              </button>
+            </div>
+
+            <div className="hero-metrics">
+              <div className="metric-card">
+                <strong>12</strong>
+                <span>Teams</span>
+              </div>
+              <div className="metric-card">
+                <strong>36</strong>
+                <span>Prognosen</span>
+              </div>
+              <div className="metric-card">
+                <strong>2026</strong>
+                <span>Preview</span>
+              </div>
+            </div>
+          </div>
+
+          <aside className="hero-highlight">
+            <p className="section-label">Top-Prognose</p>
+            <h2>{heroTopMatch.match}</h2>
+            <div className="hero-highlight-score">{heroTopMatch.score}</div>
+            <p className="hero-highlight-text">
+              Brasilien zählt aktuell zu den stärksten Turnierfavoriten und startet mit einer sehr klaren Projektion.
+            </p>
+
+            <div className="highlight-bars">
+              <StatBar label="Brasilien" value={heroTopMatch.home} />
+              <StatBar label="Unentschieden" value={heroTopMatch.draw} />
+              <StatBar label="Haiti" value={heroTopMatch.away} />
+            </div>
+          </aside>
+        </section>
+
+        <section className="overview-grid">
+          <article className="overview-card dark">
+            <p className="section-label">Plattform-Fokus</p>
+            <h3>Klare WM-Prognosen statt unübersichtlicher Daten</h3>
+            <p>
+              Die Seite bündelt Team-Auswahl, Spielprognosen, Resultate und kurze Analysen
+              in einer kompakten, modernen Oberfläche.
+            </p>
+          </article>
+
+          <article className="overview-card">
+            <p className="section-label">Top-Team</p>
+            <h3>{flags.Brasilien} Brasilien</h3>
+            <p>Starke Einzelspieler, Tiefe im Kader und hohe Titelwahrscheinlichkeit.</p>
+          </article>
+
+          <article className="overview-card">
+            <p className="section-label">Nächster Ausbau</p>
+            <h3>Mehr Teams, KO-Runde, Live-Daten</h3>
+            <p>Die Struktur ist bereit für größere Inhalte und spätere Datenquellen.</p>
+          </article>
+        </section>
+
+        <section id="ranking" className="section-block">
+          <div className="section-header-v2">
+            <div>
+              <p className="section-label">Favoriten-Ranking</p>
+              <h2>Die stärksten Titelkandidaten</h2>
+            </div>
+            <span className="header-chip">Preview 2026</span>
+          </div>
+
+          <div className="ranking-list">
+            {ranking.map((entry, index) => (
+              <article key={entry.team} className="ranking-item">
+                <div className="ranking-number">0{index + 1}</div>
+
+                <div className="ranking-main">
+                  <h3>{flags[entry.team]} {entry.team}</h3>
+                  <p>{entry.summary}</p>
+                </div>
+
+                <div className="ranking-side">
+                  <strong>{entry.chance}%</strong>
+                  <span>Titelchance</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="teams" className="section-block">
+          <div className="section-header-v2">
+            <div>
+              <p className="section-label">Teams</p>
+              <h2>Team auswählen</h2>
+            </div>
+            <span className="header-chip">{filteredTeams.length} sichtbar</span>
+          </div>
+
+          <div className="team-explorer">
+            <div className="team-search-box">
+              <span>🔎</span>
+              <input
+                type="text"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Nach Team suchen"
+              />
+            </div>
+
+            <div className="featured-row">
+              {featuredTeams.map((entry) => (
                 <button
                   key={entry}
-                  className={`team-button ${team === entry ? 'active' : ''}`}
+                  className={`featured-chip ${team === entry ? 'active' : ''}`}
+                  onClick={() => {
+                    setTeam(entry);
+                    setOpenMatch(null);
+                  }}
+                >
+                  {flags[entry]} {entry}
+                </button>
+              ))}
+            </div>
+
+            <div className="team-list-grid">
+              {filteredTeams.map((entry) => (
+                <button
+                  key={entry}
+                  className={`team-list-item ${team === entry ? 'active' : ''}`}
                   onClick={() => {
                     setTeam(entry);
                     setOpenMatch(null);
@@ -276,104 +425,89 @@ if (path === '#/datenschutz') {
                   <span>{flags[entry] || '⚽'} {entry}</span>
                   <span>→</span>
                 </button>
-              ))
-            ) : (
-              <div className="empty-state">Kein Team gefunden.</div>
-            )}
-          </div>
-
-          <div className="selected-box">
-            <p className="eyebrow">Aktuell ausgewählt</p>
-            <h3>{flags[team] || '⚽'} {team}</h3>
-            <p>Tippe auf ein Spiel und öffne die zugehörige Vorhersage.</p>
-          </div>
-        </aside>
-      </header>
-
-      <main className="container section content-stack">
-        <section className="info-grid">
-          <article className="card info-card">
-            <p className="eyebrow">Favorit</p>
-            <h3>{flags[favorite]} {favorite}</h3>
-            <p>Starker Kader, hohe Qualität in der Breite und gute Ausgangslage in den Gruppenspielen.</p>
-          </article>
-
-          <article className="card info-card">
-            <p className="eyebrow">Beliebte Teams</p>
-            <div className="pill-row">
-              {featuredTeams.map((entry) => (
-                <button
-                  key={entry}
-                  className="pill"
-                  onClick={() => {
-                    setTeam(entry);
-                    setOpenMatch(null);
-                  }}
-                >
-                  {flags[entry] || '⚽'} {entry}
-                </button>
               ))}
             </div>
-          </article>
-
-          <article className="card info-card">
-            <p className="eyebrow">So funktioniert's</p>
-            <ol className="steps">
-              <li>Team auswählen</li>
-              <li>Spiel öffnen</li>
-              <li>KI-Vorhersage ansehen</li>
-            </ol>
-          </article>
+          </div>
         </section>
 
-        <section>
-          <div className="section-head">
+        <section id="matches" className="section-block">
+          <div className="section-header-v2">
             <div>
-              <p className="eyebrow">Match Center</p>
-              <h2>Deine Gruppenspiele</h2>
+              <p className="section-label">Match Center</p>
+              <h2>Prognosen für {flags[team] || '⚽'} {team}</h2>
             </div>
-            <div className="count-box">{currentMatches.length} Spiele verfügbar</div>
+            <span className="header-chip">{currentMatches.length} Spiele</span>
           </div>
 
-          <div className="match-grid">
-            {currentMatches.map((prediction) => (
-              <MatchCard
-                key={prediction.match}
-                prediction={prediction}
-                isOpen={openMatch === prediction.match}
-                onToggle={() => setOpenMatch((current) => (current === prediction.match ? null : prediction.match))}
-              />
-            ))}
+          <div className="match-layout">
+            <aside className="match-sidebar">
+              <p className="section-label">Ausgewähltes Team</p>
+              <h3>{flags[team] || '⚽'} {team}</h3>
+              <p>
+                Öffne ein Spiel, um Ergebnis-Tipp, Wahrscheinlichkeiten und Begründung zu sehen.
+              </p>
+
+              <div className="sidebar-box">
+                <strong>Was diese Ansicht zeigt</strong>
+                <ul>
+                  <li>Prognostiziertes Ergebnis</li>
+                  <li>Verteilung der Wahrscheinlichkeiten</li>
+                  <li>Kurze Begründung zur Einschätzung</li>
+                </ul>
+              </div>
+            </aside>
+
+            <div className="match-cards-grid">
+              {currentMatches.map((prediction) => (
+                <MatchCard
+                  key={prediction.match}
+                  prediction={prediction}
+                  isOpen={openMatch === prediction.match}
+                  onToggle={() =>
+                    setOpenMatch((current) => (current === prediction.match ? null : prediction.match))
+                  }
+                />
+              ))}
+            </div>
           </div>
         </section>
+
+        <section className="faq-strip">
+          <article className="faq-card">
+            <p className="section-label">FAQ</p>
+            <h3>Wie entstehen die Prognosen?</h3>
+            <p>Durch eine vereinfachte datenbasierte Einschätzung aus Teamstärke, Qualität und Wahrscheinlichkeiten.</p>
+          </article>
+
+          <article className="faq-card">
+            <p className="section-label">Hinweis</p>
+            <h3>Sind das Live-Daten?</h3>
+            <p>Aktuell ist die Seite eine hochwertige Vorschau mit vorbereiteten Projektionen und UI-Struktur.</p>
+          </article>
+
+          <article className="faq-card">
+            <p className="section-label">Roadmap</p>
+            <h3>Was kommt als Nächstes?</h3>
+            <p>Mehr Teams, komplette Gruppen, KO-Runden, Teamseiten und später dynamische Datenquellen.</p>
+          </article>
+        </section>
+
+        <footer className="footer-v2">
+          <div>
+            <strong>WM KI Predictor 2026</strong>
+            <p>Moderne Vorschau-Plattform für Spielprognosen, Favoriten und datenbasierte Turnier-Einschätzungen.</p>
+          </div>
+
+          <div className="footer-v2-links">
+            <button onClick={() => { window.location.hash = '/impressum'; }}>
+              Impressum
+            </button>
+            <button onClick={() => { window.location.hash = '/datenschutz'; }}>
+              Datenschutz
+            </button>
+          </div>
+        </footer>
       </main>
-
-      <footer className="footer container">
-        <div>
-          <strong>WM KI Predictor 2026</strong>
-          <p>Demo-Webseite auf Basis deiner vorhandenen Idee. Später kann daraus auch eine App entstehen.</p>
-        </div>
-
-        <div className="footer-links">
-  <button
-  type="button"
-  onClick={() => {
-    window.location.hash = '/impressum';
-  }}
->
-  Impressum
-</button>
-
-<button
-  type="button"
-  onClick={() => {
-    window.location.hash = '/datenschutz';
-  }}
->
-  Datenschutz
-</button>
-        </div>
-      </footer>
     </div>
   );
 }
