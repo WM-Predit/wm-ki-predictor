@@ -101,14 +101,14 @@ button {
   z-index: 20;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  background: rgba(9, 17, 29, 0.6);
+  background: rgba(9, 17, 29, 0.65);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   gap: 20px;
   min-height: 76px;
 }
@@ -145,6 +145,7 @@ button {
 .topnav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -160,6 +161,29 @@ button {
   background: rgba(255, 255, 255, 0.07);
   color: var(--white);
   transform: translateY(-1px);
+}
+
+.lang-switch {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+}
+
+.lang-switch button {
+  min-width: 52px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.lang-switch button.active {
+  background: var(--white);
+  color: var(--dark);
 }
 
 .main-layout {
@@ -184,7 +208,8 @@ button {
 .match-sidebar,
 .match-card-v2,
 .faq-card,
-.footer-v2 {
+.footer-v2,
+.legal-page-card {
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   backdrop-filter: blur(14px);
@@ -250,7 +275,8 @@ button {
 .ghost-button:hover,
 .featured-chip:hover,
 .team-list-item:hover,
-.footer-v2-links button:hover {
+.footer-v2-links button:hover,
+.legal-back-button:hover {
   transform: translateY(-2px);
 }
 
@@ -336,8 +362,7 @@ button {
 }
 
 .overview-card.dark {
-  background:
-    linear-gradient(135deg, rgba(138, 168, 255, 0.18), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, rgba(138, 168, 255, 0.18), rgba(255, 255, 255, 0.05));
 }
 
 .overview-card h3 {
@@ -506,8 +531,7 @@ button {
 .match-sidebar {
   padding: 22px;
   border-radius: 26px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
   height: fit-content;
 }
 
@@ -543,8 +567,7 @@ button {
 .match-card-v2 {
   padding: 22px;
   border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.045));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.045));
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -577,7 +600,7 @@ button {
 }
 
 .match-card-score {
-  min-width: 74px;
+  min-width: 88px;
   padding: 10px 12px;
   border-radius: 16px;
   text-align: center;
@@ -708,13 +731,51 @@ button {
   gap: 12px;
 }
 
-.footer-v2-links button {
+.footer-v2-links button,
+.legal-back-button {
   padding: 10px 14px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
   color: var(--white);
   border: 1px solid var(--border);
   transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.legal-page {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  padding: 28px 0;
+}
+
+.legal-page-card {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.legal-page-card h1 {
+  margin: 18px 0 10px;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.legal-page-card h2 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.legal-page-card p,
+.legal-page-card li {
+  color: var(--text-soft);
+}
+
+.legal-page-card ul {
+  padding-left: 18px;
 }
 
 @media (max-width: 1100px) {
@@ -744,12 +805,15 @@ button {
   .section-header-v2,
   .match-card-top,
   .footer-v2 {
+    grid-template-columns: 1fr;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
   .topnav {
     flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .hero-panel,
@@ -760,7 +824,8 @@ button {
   .faq-card,
   .footer-v2,
   .ranking-item,
-  .overview-card {
+  .overview-card,
+  .legal-page-card {
     padding: 18px;
   }
 
@@ -791,4 +856,7 @@ button {
   .match-card-title {
     font-size: 1.25rem;
   }
-}
+
+  .lang-switch {
+    align-self: flex-start;
+  }
