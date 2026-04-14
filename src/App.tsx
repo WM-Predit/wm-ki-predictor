@@ -16,6 +16,20 @@ type MatchPrediction = {
   };
 };
 
+type GroupEntry = {
+  team: string;
+  pts: number;
+  gf: number;
+  ga: number;
+  advance: number;
+};
+
+type GroupData = {
+  group: string;
+  teams: string[];
+  table: GroupEntry[];
+};
+
 const data: Record<string, MatchPrediction[]> = {
   Deutschland: [
     {
@@ -87,11 +101,11 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'überlegen', en: 'overall superiority' }
     },
     {
-      match: 'Frankreich vs Play-off 2',
-      score: '3:0',
-      home: 85,
-      draw: 10,
-      away: 5,
+      match: 'Frankreich vs Tunesien',
+      score: '2:0',
+      home: 70,
+      draw: 20,
+      away: 10,
       reason: { de: 'klar besser', en: 'clearly stronger' }
     }
   ],
@@ -139,7 +153,7 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'effizienter', en: 'more efficient in attack' }
     },
     {
-      match: 'Argentinien vs Jordanien',
+      match: 'Argentinien vs Saudi-Arabien',
       score: '3:0',
       home: 85,
       draw: 10,
@@ -191,7 +205,7 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'klar überlegen', en: 'clear superiority' }
     },
     {
-      match: 'Portugal vs Play-off 1',
+      match: 'Portugal vs Paraguay',
       score: '2:0',
       home: 75,
       draw: 15,
@@ -217,7 +231,7 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'bessere Offensive', en: 'stronger attacking output' }
     },
     {
-      match: 'USA vs Play-off C',
+      match: 'USA vs Tunesien',
       score: '3:0',
       home: 80,
       draw: 15,
@@ -243,7 +257,7 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'mehr Qualität', en: 'higher quality level' }
     },
     {
-      match: 'Niederlande vs Play-off B',
+      match: 'Niederlande vs Norwegen',
       score: '2:0',
       home: 70,
       draw: 20,
@@ -295,12 +309,12 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'ausgeglichen', en: 'very balanced matchup' }
     },
     {
-      match: 'Mexiko vs Play-off D',
-      score: '2:0',
-      home: 70,
-      draw: 20,
-      away: 10,
-      reason: { de: 'klar überlegen', en: 'clear superiority' }
+      match: 'Mexiko vs Senegal',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'enges Spiel', en: 'tight matchup' }
     }
   ],
   Japan: [
@@ -321,12 +335,602 @@ const data: Record<string, MatchPrediction[]> = {
       reason: { de: 'ausgeglichen', en: 'balanced game profile' }
     },
     {
-      match: 'Japan vs Play-off B',
+      match: 'Japan vs Senegal',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'sehr offen', en: 'very open matchup' }
+    }
+  ],
+  Senegal: [
+    {
+      match: 'Senegal vs Deutschland',
+      score: '1:2',
+      home: 15,
+      draw: 25,
+      away: 60,
+      reason: { de: 'Deutschland individueller stärker', en: 'Germany has stronger individual quality' }
+    },
+    {
+      match: 'Senegal vs Japan',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'sehr ausgeglichen', en: 'very balanced matchup' }
+    },
+    {
+      match: 'Senegal vs Mexiko',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'ähnliches Niveau', en: 'similar overall level' }
+    }
+  ],
+  Uruguay: [
+    {
+      match: 'Uruguay vs Brasilien',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Brasilien offensiv stärker', en: 'Brazil is stronger in attack' }
+    },
+    {
+      match: 'Uruguay vs Iran',
       score: '2:0',
       home: 65,
       draw: 20,
       away: 15,
-      reason: { de: 'überlegen', en: 'stronger overall team' }
+      reason: { de: 'mehr Qualität', en: 'higher overall quality' }
+    },
+    {
+      match: 'Uruguay vs Panama',
+      score: '2:0',
+      home: 70,
+      draw: 20,
+      away: 10,
+      reason: { de: 'klar überlegen', en: 'clear favorite' }
+    }
+  ],
+  Panama: [
+    {
+      match: 'Panama vs Brasilien',
+      score: '0:3',
+      home: 5,
+      draw: 10,
+      away: 85,
+      reason: { de: 'deutlicher Klassenunterschied', en: 'clear quality gap' }
+    },
+    {
+      match: 'Panama vs Uruguay',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Uruguay klar stärker', en: 'Uruguay is clearly stronger' }
+    },
+    {
+      match: 'Panama vs Iran',
+      score: '1:1',
+      home: 25,
+      draw: 40,
+      away: 35,
+      reason: { de: 'leichtes Plus für Iran', en: 'slight edge for Iran' }
+    }
+  ],
+  Iran: [
+    {
+      match: 'Iran vs Brasilien',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Brasilien klar überlegen', en: 'Brazil is clearly stronger' }
+    },
+    {
+      match: 'Iran vs Uruguay',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'Uruguay mit mehr Klasse', en: 'Uruguay has more quality' }
+    },
+    {
+      match: 'Iran vs Panama',
+      score: '1:1',
+      home: 35,
+      draw: 40,
+      away: 25,
+      reason: { de: 'enge Partie', en: 'tight matchup' }
+    }
+  ],
+  Australien: [
+    {
+      match: 'Australien vs Frankreich',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Frankreich klar stärker', en: 'France is clearly stronger' }
+    },
+    {
+      match: 'Australien vs USA',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'USA offensiv besser', en: 'USA has stronger attacking quality' }
+    },
+    {
+      match: 'Australien vs Tunesien',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'sehr ausgeglichen', en: 'very balanced matchup' }
+    }
+  ],
+  Tunesien: [
+    {
+      match: 'Tunesien vs Frankreich',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Frankreich überlegen', en: 'France has the stronger squad' }
+    },
+    {
+      match: 'Tunesien vs USA',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'USA mit mehr Tempo', en: 'USA has more pace' }
+    },
+    {
+      match: 'Tunesien vs Australien',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'ausgeglichen', en: 'balanced matchup' }
+    }
+  ],
+  Kroatien: [
+    {
+      match: 'Kroatien vs England',
+      score: '1:2',
+      home: 15,
+      draw: 25,
+      away: 60,
+      reason: { de: 'England mit mehr Tempo', en: 'England has more pace' }
+    },
+    {
+      match: 'Kroatien vs Ghana',
+      score: '2:1',
+      home: 55,
+      draw: 25,
+      away: 20,
+      reason: { de: 'mehr Erfahrung', en: 'more tournament experience' }
+    },
+    {
+      match: 'Kroatien vs Südkorea',
+      score: '1:1',
+      home: 35,
+      draw: 35,
+      away: 30,
+      reason: { de: 'enges Spiel', en: 'close matchup' }
+    }
+  ],
+  Ghana: [
+    {
+      match: 'Ghana vs England',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'England klar besser', en: 'England is clearly stronger' }
+    },
+    {
+      match: 'Ghana vs Kroatien',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Kroatien etwas stärker', en: 'Croatia has a slight edge' }
+    },
+    {
+      match: 'Ghana vs Südkorea',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'sehr offen', en: 'very open matchup' }
+    }
+  ],
+  Südkorea: [
+    {
+      match: 'Südkorea vs England',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'England stärker besetzt', en: 'England has the stronger squad' }
+    },
+    {
+      match: 'Südkorea vs Kroatien',
+      score: '1:1',
+      home: 30,
+      draw: 35,
+      away: 35,
+      reason: { de: 'nahezu ausgeglichen', en: 'nearly balanced matchup' }
+    },
+    {
+      match: 'Südkorea vs Ghana',
+      score: '1:1',
+      home: 30,
+      draw: 40,
+      away: 30,
+      reason: { de: 'offenes Spiel', en: 'open game profile' }
+    }
+  ],
+  Kolumbien: [
+    {
+      match: 'Kolumbien vs Argentinien',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Argentinien etwas stärker', en: 'Argentina has more quality' }
+    },
+    {
+      match: 'Kolumbien vs Österreich',
+      score: '2:1',
+      home: 50,
+      draw: 30,
+      away: 20,
+      reason: { de: 'leichter Vorteil', en: 'slight overall edge' }
+    },
+    {
+      match: 'Kolumbien vs Saudi-Arabien',
+      score: '2:0',
+      home: 70,
+      draw: 20,
+      away: 10,
+      reason: { de: 'klar überlegen', en: 'clear favorite' }
+    }
+  ],
+  Österreich: [
+    {
+      match: 'Österreich vs Argentinien',
+      score: '1:2',
+      home: 15,
+      draw: 25,
+      away: 60,
+      reason: { de: 'Argentinien etwas stärker', en: 'Argentina has more quality' }
+    },
+    {
+      match: 'Österreich vs Kolumbien',
+      score: '1:2',
+      home: 20,
+      draw: 30,
+      away: 50,
+      reason: { de: 'Kolumbien mit leichtem Vorteil', en: 'Colombia has a slight edge' }
+    },
+    {
+      match: 'Österreich vs Saudi-Arabien',
+      score: '2:0',
+      home: 65,
+      draw: 20,
+      away: 15,
+      reason: { de: 'mehr Qualität', en: 'higher overall quality' }
+    }
+  ],
+  'Saudi-Arabien': [
+    {
+      match: 'Saudi-Arabien vs Argentinien',
+      score: '0:3',
+      home: 5,
+      draw: 10,
+      away: 85,
+      reason: { de: 'Argentinien deutlich stärker', en: 'Argentina is far stronger' }
+    },
+    {
+      match: 'Saudi-Arabien vs Kolumbien',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Kolumbien überlegen', en: 'Colombia is stronger overall' }
+    },
+    {
+      match: 'Saudi-Arabien vs Österreich',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'Österreich mit mehr Qualität', en: 'Austria has more quality' }
+    }
+  ],
+  Marokko: [
+    {
+      match: 'Marokko vs Spanien',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Spanien etwas stärker', en: 'Spain has a slight edge' }
+    },
+    {
+      match: 'Marokko vs Ecuador',
+      score: '1:1',
+      home: 35,
+      draw: 35,
+      away: 30,
+      reason: { de: 'enges Duell', en: 'tight matchup' }
+    },
+    {
+      match: 'Marokko vs Neuseeland',
+      score: '2:0',
+      home: 70,
+      draw: 20,
+      away: 10,
+      reason: { de: 'stärkeres Team', en: 'stronger overall team' }
+    }
+  ],
+  Ecuador: [
+    {
+      match: 'Ecuador vs Deutschland',
+      score: '0:2',
+      home: 12,
+      draw: 20,
+      away: 68,
+      reason: { de: 'Deutschland mit mehr Qualität', en: 'Germany has more quality' }
+    },
+    {
+      match: 'Ecuador vs Marokko',
+      score: '1:1',
+      home: 30,
+      draw: 35,
+      away: 35,
+      reason: { de: 'eng und ausgeglichen', en: 'close and balanced' }
+    },
+    {
+      match: 'Ecuador vs Neuseeland',
+      score: '2:0',
+      home: 65,
+      draw: 20,
+      away: 15,
+      reason: { de: 'klarer Vorteil', en: 'clear advantage' }
+    }
+  ],
+  Neuseeland: [
+    {
+      match: 'Neuseeland vs Spanien',
+      score: '0:3',
+      home: 5,
+      draw: 15,
+      away: 80,
+      reason: { de: 'Spanien klar überlegen', en: 'Spain is clearly superior' }
+    },
+    {
+      match: 'Neuseeland vs Marokko',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Marokko besser besetzt', en: 'Morocco has more quality' }
+    },
+    {
+      match: 'Neuseeland vs Ecuador',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'Ecuador stärker', en: 'Ecuador is stronger overall' }
+    }
+  ],
+  Paraguay: [
+    {
+      match: 'Paraguay vs Portugal',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Portugal mit mehr Klasse', en: 'Portugal has more class' }
+    },
+    {
+      match: 'Paraguay vs Algerien',
+      score: '1:1',
+      home: 35,
+      draw: 35,
+      away: 30,
+      reason: { de: 'ausgeglichen', en: 'balanced matchup' }
+    },
+    {
+      match: 'Paraguay vs Kap Verde',
+      score: '2:0',
+      home: 65,
+      draw: 20,
+      away: 15,
+      reason: { de: 'mehr Erfahrung', en: 'more experience' }
+    }
+  ],
+  Algerien: [
+    {
+      match: 'Algerien vs Argentinien',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Argentinien überlegen', en: 'Argentina is stronger overall' }
+    },
+    {
+      match: 'Algerien vs Paraguay',
+      score: '1:1',
+      home: 30,
+      draw: 35,
+      away: 35,
+      reason: { de: 'knappes Spiel', en: 'close matchup' }
+    },
+    {
+      match: 'Algerien vs Kap Verde',
+      score: '1:0',
+      home: 50,
+      draw: 30,
+      away: 20,
+      reason: { de: 'leichter Vorteil', en: 'slight edge' }
+    }
+  ],
+  'Kap Verde': [
+    {
+      match: 'Kap Verde vs Spanien',
+      score: '0:2',
+      home: 10,
+      draw: 15,
+      away: 75,
+      reason: { de: 'Spanien klar stärker', en: 'Spain is clearly stronger' }
+    },
+    {
+      match: 'Kap Verde vs Paraguay',
+      score: '0:2',
+      home: 15,
+      draw: 20,
+      away: 65,
+      reason: { de: 'Paraguay überlegen', en: 'Paraguay has the edge' }
+    },
+    {
+      match: 'Kap Verde vs Algerien',
+      score: '0:1',
+      home: 20,
+      draw: 30,
+      away: 50,
+      reason: { de: 'Algerien leicht besser', en: 'Algeria is slightly stronger' }
+    }
+  ],
+  Norwegen: [
+    {
+      match: 'Norwegen vs Frankreich',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Frankreich stärker', en: 'France is stronger overall' }
+    },
+    {
+      match: 'Norwegen vs Belgien',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Belgien etwas stärker', en: 'Belgium has a slight edge' }
+    },
+    {
+      match: 'Norwegen vs Südafrika',
+      score: '2:1',
+      home: 50,
+      draw: 30,
+      away: 20,
+      reason: { de: 'leichter Vorteil', en: 'slight advantage' }
+    }
+  ],
+  Südafrika: [
+    {
+      match: 'Südafrika vs Mexiko',
+      score: '1:2',
+      home: 20,
+      draw: 25,
+      away: 55,
+      reason: { de: 'Mexiko etwas stärker', en: 'Mexico has a slight edge' }
+    },
+    {
+      match: 'Südafrika vs Belgien',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Belgien überlegen', en: 'Belgium is superior' }
+    },
+    {
+      match: 'Südafrika vs Norwegen',
+      score: '1:2',
+      home: 20,
+      draw: 30,
+      away: 50,
+      reason: { de: 'Norwegen leicht stärker', en: 'Norway is slightly stronger' }
+    }
+  ],
+  Curaçao: [
+    {
+      match: 'Curaçao vs Deutschland',
+      score: '0:3',
+      home: 5,
+      draw: 10,
+      away: 85,
+      reason: { de: 'Deutschland klar überlegen', en: 'Germany is clearly superior' }
+    }
+  ],
+  Elfenbeinküste: [
+    {
+      match: 'Elfenbeinküste vs Deutschland',
+      score: '1:2',
+      home: 15,
+      draw: 25,
+      away: 60,
+      reason: { de: 'Deutschland mit mehr Qualität', en: 'Germany has more quality' }
+    }
+  ],
+  Haiti: [
+    {
+      match: 'Haiti vs Brasilien',
+      score: '0:3',
+      home: 5,
+      draw: 10,
+      away: 85,
+      reason: { de: 'Brasilien viel stärker', en: 'Brazil is much stronger' }
+    }
+  ],
+  Schottland: [
+    {
+      match: 'Schottland vs Brasilien',
+      score: '0:2',
+      home: 10,
+      draw: 20,
+      away: 70,
+      reason: { de: 'Brasilien stärker', en: 'Brazil is stronger overall' }
+    }
+  ],
+  Ägypten: [
+    {
+      match: 'Ägypten vs Belgien',
+      score: '1:2',
+      home: 15,
+      draw: 25,
+      away: 60,
+      reason: { de: 'Belgien etwas stärker', en: 'Belgium has the edge' }
+    }
+  ],
+  Usbekistan: [
+    {
+      match: 'Usbekistan vs Portugal',
+      score: '0:3',
+      home: 5,
+      draw: 15,
+      away: 80,
+      reason: { de: 'Portugal klar überlegen', en: 'Portugal is clearly stronger' }
+    }
+  ],
+  Jordanien: [
+    {
+      match: 'Jordanien vs Argentinien',
+      score: '0:3',
+      home: 5,
+      draw: 10,
+      away: 85,
+      reason: { de: 'Argentinien deutlich stärker', en: 'Argentina is far stronger' }
     }
   ]
 };
@@ -344,33 +948,33 @@ const flags: Record<string, string> = {
   Belgien: '🇧🇪',
   Mexiko: '🇲🇽',
   Japan: '🇯🇵',
-  Curaçao: '🇨🇼',
-  Elfenbeinküste: '🇨🇮',
-  Ecuador: '🇪🇨',
-  Haiti: '🇭🇹',
-  Schottland: '🏴',
-  Marokko: '🇲🇦',
   Senegal: '🇸🇳',
-  Norwegen: '🇳🇴',
-  Kroatien: '🇭🇷',
-  Panama: '🇵🇦',
-  Ghana: '🇬🇭',
-  Algerien: '🇩🇿',
-  Österreich: '🇦🇹',
-  Jordanien: '🇯🇴',
-  'Kap Verde': '🇨🇻',
   Uruguay: '🇺🇾',
-  'Saudi-Arabien': '🇸🇦',
-  Kolumbien: '🇨🇴',
-  Usbekistan: '🇺🇿',
-  Paraguay: '🇵🇾',
+  Panama: '🇵🇦',
+  Iran: '🇮🇷',
   Australien: '🇦🇺',
   Tunesien: '🇹🇳',
-  Ägypten: '🇪🇬',
-  Iran: '🇮🇷',
+  Kroatien: '🇭🇷',
+  Ghana: '🇬🇭',
+  Südkorea: '🇰🇷',
+  Kolumbien: '🇨🇴',
+  Österreich: '🇦🇹',
+  'Saudi-Arabien': '🇸🇦',
+  Marokko: '🇲🇦',
+  Ecuador: '🇪🇨',
   Neuseeland: '🇳🇿',
+  Paraguay: '🇵🇾',
+  Algerien: '🇩🇿',
+  'Kap Verde': '🇨🇻',
+  Norwegen: '🇳🇴',
   Südafrika: '🇿🇦',
-  Südkorea: '🇰🇷'
+  Curaçao: '🇨🇼',
+  Elfenbeinküste: '🇨🇮',
+  Haiti: '🇭🇹',
+  Schottland: '🏴',
+  Ägypten: '🇪🇬',
+  Usbekistan: '🇺🇿',
+  Jordanien: '🇯🇴'
 };
 
 const featuredTeams = ['Deutschland', 'Brasilien', 'Frankreich', 'England', 'Argentinien', 'Spanien'];
@@ -383,11 +987,95 @@ const ranking = [
   { team: 'Argentinien', chance: 14 }
 ];
 
+const groups: GroupData[] = [
+  {
+    group: 'A',
+    teams: ['Deutschland', 'Japan', 'Mexiko', 'Senegal'],
+    table: [
+      { team: 'Deutschland', pts: 7, gf: 6, ga: 1, advance: 88 },
+      { team: 'Mexiko', pts: 4, gf: 3, ga: 3, advance: 54 },
+      { team: 'Senegal', pts: 3, gf: 2, ga: 3, advance: 36 },
+      { team: 'Japan', pts: 2, gf: 2, ga: 6, advance: 22 }
+    ]
+  },
+  {
+    group: 'B',
+    teams: ['Brasilien', 'Uruguay', 'Iran', 'Panama'],
+    table: [
+      { team: 'Brasilien', pts: 9, gf: 7, ga: 1, advance: 95 },
+      { team: 'Uruguay', pts: 6, gf: 5, ga: 2, advance: 79 },
+      { team: 'Iran', pts: 1, gf: 1, ga: 5, advance: 16 },
+      { team: 'Panama', pts: 1, gf: 1, ga: 6, advance: 10 }
+    ]
+  },
+  {
+    group: 'C',
+    teams: ['Frankreich', 'USA', 'Australien', 'Tunesien'],
+    table: [
+      { team: 'Frankreich', pts: 9, gf: 6, ga: 1, advance: 93 },
+      { team: 'USA', pts: 6, gf: 5, ga: 2, advance: 74 },
+      { team: 'Australien', pts: 1, gf: 1, ga: 4, advance: 18 },
+      { team: 'Tunesien', pts: 1, gf: 1, ga: 6, advance: 15 }
+    ]
+  },
+  {
+    group: 'D',
+    teams: ['England', 'Kroatien', 'Ghana', 'Südkorea'],
+    table: [
+      { team: 'England', pts: 9, gf: 7, ga: 1, advance: 91 },
+      { team: 'Kroatien', pts: 4, gf: 4, ga: 4, advance: 57 },
+      { team: 'Südkorea', pts: 2, gf: 2, ga: 4, advance: 27 },
+      { team: 'Ghana', pts: 1, gf: 2, ga: 6, advance: 19 }
+    ]
+  },
+  {
+    group: 'E',
+    teams: ['Argentinien', 'Kolumbien', 'Österreich', 'Saudi-Arabien'],
+    table: [
+      { team: 'Argentinien', pts: 9, gf: 8, ga: 1, advance: 94 },
+      { team: 'Kolumbien', pts: 6, gf: 5, ga: 3, advance: 71 },
+      { team: 'Österreich', pts: 3, gf: 3, ga: 4, advance: 28 },
+      { team: 'Saudi-Arabien', pts: 0, gf: 0, ga: 8, advance: 7 }
+    ]
+  },
+  {
+    group: 'F',
+    teams: ['Spanien', 'Marokko', 'Ecuador', 'Neuseeland'],
+    table: [
+      { team: 'Spanien', pts: 9, gf: 7, ga: 1, advance: 92 },
+      { team: 'Marokko', pts: 4, gf: 3, ga: 3, advance: 58 },
+      { team: 'Ecuador', pts: 4, gf: 3, ga: 3, advance: 46 },
+      { team: 'Neuseeland', pts: 0, gf: 0, ga: 6, advance: 4 }
+    ]
+  },
+  {
+    group: 'G',
+    teams: ['Portugal', 'Paraguay', 'Algerien', 'Kap Verde'],
+    table: [
+      { team: 'Portugal', pts: 9, gf: 7, ga: 1, advance: 90 },
+      { team: 'Paraguay', pts: 4, gf: 3, ga: 3, advance: 55 },
+      { team: 'Algerien', pts: 4, gf: 2, ga: 3, advance: 41 },
+      { team: 'Kap Verde', pts: 0, gf: 0, ga: 5, advance: 6 }
+    ]
+  },
+  {
+    group: 'H',
+    teams: ['Niederlande', 'Belgien', 'Südafrika', 'Norwegen'],
+    table: [
+      { team: 'Belgien', pts: 7, gf: 6, ga: 2, advance: 82 },
+      { team: 'Niederlande', pts: 6, gf: 5, ga: 2, advance: 76 },
+      { team: 'Norwegen', pts: 3, gf: 3, ga: 4, advance: 24 },
+      { team: 'Südafrika', pts: 1, gf: 1, ga: 7, advance: 12 }
+    ]
+  }
+];
+
 const ui = {
   de: {
     brandTitle: 'WM KI Predictor',
     brandSubtitle: 'Professionelle Turnier-Prognosen',
     navFavorites: 'Favoriten',
+    navGroups: 'Gruppen',
     navTeams: 'Teams',
     navMatches: 'Match Center',
     heroKicker: 'WM 2026 Prognoseplattform',
@@ -415,6 +1103,18 @@ const ui = {
     rankingTitle: 'Die stärksten Titelkandidaten',
     previewChip: 'Preview 2026',
     titleChance: 'Titelchance',
+    groupsLabel: 'WM-Gruppen',
+    groupsTitle: 'Alle Gruppen im Überblick',
+    groupsText: 'Gruppenkarten und Tabellen geben einen schnellen Überblick auf Platzierungen, Punkte und Weiterkommen-Chancen.',
+    groupLabel: 'Gruppe',
+    groupFavorite: 'Favorit',
+    groupContender: 'Gefährlich',
+    groupUnderdog: 'Außenseiter',
+    tableTitle: 'Gruppentabelle',
+    pts: 'Pkt',
+    gf: 'T',
+    ga: 'GT',
+    advanceChance: 'Weiter %',
     teamsLabel: 'Teams',
     teamsTitle: 'Team auswählen',
     visible: 'sichtbar',
@@ -462,6 +1162,7 @@ const ui = {
     brandTitle: 'World Cup AI Predictor',
     brandSubtitle: 'Professional tournament forecasts',
     navFavorites: 'Favorites',
+    navGroups: 'Groups',
     navTeams: 'Teams',
     navMatches: 'Match Center',
     heroKicker: 'World Cup 2026 prediction platform',
@@ -489,6 +1190,18 @@ const ui = {
     rankingTitle: 'The strongest title contenders',
     previewChip: 'Preview 2026',
     titleChance: 'Title chance',
+    groupsLabel: 'World Cup Groups',
+    groupsTitle: 'All groups at a glance',
+    groupsText: 'Group cards and tables give a fast overview of rankings, points and qualification chances.',
+    groupLabel: 'Group',
+    groupFavorite: 'Favorite',
+    groupContender: 'Dangerous',
+    groupUnderdog: 'Underdog',
+    tableTitle: 'Group table',
+    pts: 'Pts',
+    gf: 'GF',
+    ga: 'GA',
+    advanceChance: 'Adv %',
     teamsLabel: 'Teams',
     teamsTitle: 'Select a team',
     visible: 'visible',
@@ -551,6 +1264,15 @@ function getBadge(prediction: MatchPrediction, lang: Lang) {
   return ui[lang].balanced;
 }
 
+function getGroupTag(team: string, lang: Lang) {
+  const favorites = ['Brasilien', 'Frankreich', 'Deutschland', 'Argentinien', 'Spanien', 'England'];
+  const contenders = ['Portugal', 'USA', 'Niederlande', 'Belgien', 'Japan', 'Mexiko', 'Kolumbien', 'Uruguay'];
+
+  if (favorites.includes(team)) return ui[lang].groupFavorite;
+  if (contenders.includes(team)) return ui[lang].groupContender;
+  return ui[lang].groupUnderdog;
+}
+
 function StatBar({
   label,
   value
@@ -609,7 +1331,7 @@ function MatchCard({
         </span>
       </div>
 
-      <button className="cta-button secondary" onClick={onToggle}>
+      <button className="cta-button secondary" onClick={onToggle} type="button">
         {isOpen ? t.closeAnalysis : t.openAnalysis}
       </button>
 
@@ -631,6 +1353,57 @@ function MatchCard({
         </div>
       )}
     </article>
+  );
+}
+
+function GroupTable({
+  group,
+  lang,
+  activeTeam,
+  onSelectTeam
+}: {
+  group: GroupData;
+  lang: Lang;
+  activeTeam: string;
+  onSelectTeam: (team: string) => void;
+}) {
+  const t = ui[lang];
+
+  return (
+    <div className="group-table-wrap">
+      <div className="group-table-head">
+        <strong>{t.tableTitle}</strong>
+      </div>
+
+      <div className="group-table">
+        <div className="group-table-row group-table-header">
+          <span>#</span>
+          <span>Team</span>
+          <span>{t.pts}</span>
+          <span>{t.gf}</span>
+          <span>{t.ga}</span>
+          <span>{t.advanceChance}</span>
+        </div>
+
+        {group.table.map((entry, index) => (
+          <button
+            key={entry.team}
+            type="button"
+            className={`group-table-row group-table-button ${activeTeam === entry.team ? 'active' : ''}`}
+            onClick={() => onSelectTeam(entry.team)}
+          >
+            <span>{index + 1}</span>
+            <span className="group-table-team">
+              {flags[entry.team] || '⚽'} {entry.team}
+            </span>
+            <span>{entry.pts}</span>
+            <span>{entry.gf}</span>
+            <span>{entry.ga}</span>
+            <span>{entry.advance}%</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -664,8 +1437,8 @@ export default function App() {
 
     const description =
       lang === 'de'
-        ? 'WM 2026 Prognosen mit KI: Match-Vorhersagen, Wahrscheinlichkeiten, Favoriten-Ranking und Team-Analysen.'
-        : 'World Cup 2026 predictions with AI: match forecasts, probabilities, favorites ranking and team analysis.';
+        ? 'WM 2026 Prognosen mit KI: Match-Vorhersagen, Wahrscheinlichkeiten, Favoriten-Ranking, Gruppen und Team-Analysen.'
+        : 'World Cup 2026 predictions with AI: match forecasts, probabilities, favorites ranking, groups and team analysis.';
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement('meta');
@@ -684,8 +1457,14 @@ export default function App() {
   }, [query]);
 
   const currentMatches = data[team] ?? [];
-  const topMatch = data['Brasilien'][0];
+  const topMatch = data.Brasilien[0];
   const t = ui[lang];
+
+  const selectTeamAndJump = (selectedTeam: string) => {
+    setTeam(selectedTeam);
+    setOpenMatch(null);
+    document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   if (path === '#/impressum') {
     return <Impressum lang={lang} onBack={() => { window.location.hash = '/'; }} />;
@@ -711,13 +1490,28 @@ export default function App() {
           </div>
 
           <nav className="topnav">
-            <button onClick={() => document.getElementById('ranking')?.scrollIntoView({ behavior: 'smooth' })}>
+            <button
+              onClick={() => document.getElementById('ranking')?.scrollIntoView({ behavior: 'smooth' })}
+              type="button"
+            >
               {t.navFavorites}
             </button>
-            <button onClick={() => document.getElementById('teams')?.scrollIntoView({ behavior: 'smooth' })}>
+            <button
+              onClick={() => document.getElementById('groups')?.scrollIntoView({ behavior: 'smooth' })}
+              type="button"
+            >
+              {t.navGroups}
+            </button>
+            <button
+              onClick={() => document.getElementById('teams')?.scrollIntoView({ behavior: 'smooth' })}
+              type="button"
+            >
               {t.navTeams}
             </button>
-            <button onClick={() => document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' })}>
+            <button
+              onClick={() => document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' })}
+              type="button"
+            >
               {t.navMatches}
             </button>
           </nav>
@@ -752,6 +1546,7 @@ export default function App() {
               <button
                 className="cta-button"
                 onClick={() => document.getElementById('matches')?.scrollIntoView({ behavior: 'smooth' })}
+                type="button"
               >
                 {t.heroPrimary}
               </button>
@@ -759,6 +1554,7 @@ export default function App() {
               <button
                 className="ghost-button"
                 onClick={() => document.getElementById('ranking')?.scrollIntoView({ behavior: 'smooth' })}
+                type="button"
               >
                 {t.heroSecondary}
               </button>
@@ -850,6 +1646,54 @@ export default function App() {
           </div>
         </section>
 
+        <section id="groups" className="section-block">
+          <div className="section-header-v2">
+            <div>
+              <p className="section-label">{t.groupsLabel}</p>
+              <h2>{t.groupsTitle}</h2>
+              <p className="section-subtext">{t.groupsText}</p>
+            </div>
+            <span className="header-chip">{groups.length} {lang === 'de' ? 'Gruppen' : 'Groups'}</span>
+          </div>
+
+          <div className="groups-grid">
+            {groups.map((group) => (
+              <article key={group.group} className="group-card">
+                <div className="group-card-head">
+                  <p className="section-label">{t.groupLabel}</p>
+                  <h3>{t.groupLabel} {group.group}</h3>
+                </div>
+
+                <div className="group-team-list">
+                  {group.teams.map((entry) => (
+                    <button
+                      key={entry}
+                      className={`group-team-item ${team === entry ? 'active' : ''}`}
+                      type="button"
+                      onClick={() => selectTeamAndJump(entry)}
+                    >
+                      <div className="group-team-main">
+                        <span className="group-team-name">
+                          {flags[entry] || '⚽'} {entry}
+                        </span>
+                        <span className="group-team-tag">{getGroupTag(entry, lang)}</span>
+                      </div>
+                      <span className="group-team-arrow">→</span>
+                    </button>
+                  ))}
+                </div>
+
+                <GroupTable
+                  group={group}
+                  lang={lang}
+                  activeTeam={team}
+                  onSelectTeam={selectTeamAndJump}
+                />
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section id="teams" className="section-block">
           <div className="section-header-v2">
             <div>
@@ -881,7 +1725,7 @@ export default function App() {
                   }}
                   type="button"
                 >
-                  {flags[entry]} {entry}
+                  {flags[entry] || '⚽'} {entry}
                 </button>
               ))}
             </div>
